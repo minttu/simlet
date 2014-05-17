@@ -21,7 +21,7 @@ public class ConfigureFactory {
         try {
             engine.eval(src);
             Invocable invocable = (Invocable) engine;
-            configure = (Configure)invocable.invokeFunction("getConfiguration");
+            configure = (Configure) invocable.invokeFunction("getConfiguration");
         } catch (ScriptException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {

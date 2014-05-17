@@ -31,7 +31,7 @@ public class ParameterPane extends BorderPane implements Tabbable {
         tab.setDisable(true);
         tab.setClosable(false);
         tab.setOnSelectionChanged((e) -> {
-            if(tab.isSelected()) {
+            if (tab.isSelected()) {
                 update();
             }
         });
@@ -59,9 +59,9 @@ public class ParameterPane extends BorderPane implements Tabbable {
         TableColumn valuesColumn = new TableColumn("Sample");
 
         int times = (data.size() > 0 ? data.get(0).getValues().size() : 0);
-        for(int i = 0; i < times; i++) {
+        for (int i = 0; i < times; i++) {
             final int run = i;
-            TableColumn values = new TableColumn(""+(run+1));
+            TableColumn values = new TableColumn("" + (run + 1));
             values.setCellValueFactory(p -> {
                 Parameter par = (((TableColumn.CellDataFeatures<Parameter, Double>) p).getValue());
                 return new SimpleObjectProperty<String>(String.format("%1$,.2f", par.getValues().get(run)));

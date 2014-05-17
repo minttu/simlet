@@ -6,6 +6,7 @@ import fi.paivola.simlet.misc.Pos;
 import fi.paivola.simlet.model.Model;
 import fi.paivola.simlet.model.PointModel;
 import fi.paivola.simlet.time.Scheduler;
+import fi.paivola.simlet.time.Time;
 import fi.paivola.simlet.time.Unit;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
@@ -34,18 +35,12 @@ public class Field extends PointModel {
         for (Model model : connections) {
             model.addMessage(new StringMessage("wheat", "" + (each), this));
         }
-        registerHarvest(scheduler);
-    }
-
-    private void registerHarvest(Scheduler scheduler) {
-        scheduler.schedule(scheduler.getTime().after(Unit.DAY), (sc) -> {
-            harvest(sc);
-        });
     }
 
     @Override
     public void registerCallbacks(Scheduler scheduler) {
         super.registerCallbacks(scheduler);
-        registerHarvest(scheduler);
+        // Every day at 7:00
+        scheduler.after(new Time(7, Unit.HOUR), sc -> scheduler.every(Unit.DAY, s -> harvest(s)));
     }
 }

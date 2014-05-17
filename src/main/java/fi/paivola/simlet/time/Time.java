@@ -10,11 +10,11 @@ public class Time implements TimeInterface, Comparable<Time> {
         this.amount = Math.max(0, amount);
     }
 
-    public Time(int times, Unit unit) {
+    public Time(int times, TimeInterface unit) {
         this(times * unit.getAmount());
     }
 
-    public Time(Unit unit) {
+    public Time(TimeInterface unit) {
         this(unit.getAmount());
     }
 
@@ -22,11 +22,11 @@ public class Time implements TimeInterface, Comparable<Time> {
         this.amount += Math.max(0, amount);
     }
 
-    public void addAmount(int times, Unit unit) {
+    public void addAmount(int times, TimeInterface unit) {
         this.addAmount(times * unit.getAmount());
     }
 
-    public void addAmount(Unit unit) {
+    public void addAmount(TimeInterface unit) {
         this.addAmount(unit.getAmount());
     }
 
@@ -34,11 +34,11 @@ public class Time implements TimeInterface, Comparable<Time> {
         return new Time(this.amount + amount);
     }
 
-    public Time after(int times, Unit unit) {
+    public Time after(int times, TimeInterface unit) {
         return after(times * unit.getAmount());
     }
 
-    public Time after(Unit unit) {
+    public Time after(TimeInterface unit) {
         return after(unit.getAmount());
     }
 

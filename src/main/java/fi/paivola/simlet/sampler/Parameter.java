@@ -64,7 +64,7 @@ public class Parameter {
     }
 
     public ListProperty<Double> valuesProperty() {
-        SimpleListProperty<Double> dd =  new SimpleListProperty<>();
+        SimpleListProperty<Double> dd = new SimpleListProperty<>();
         dd.addAll(values);
         return dd;
     }

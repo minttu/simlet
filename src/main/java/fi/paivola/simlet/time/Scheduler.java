@@ -11,21 +11,32 @@ import java.util.concurrent.Executors;
  * Created by juhani on 5/14/14.
  */
 public class Scheduler implements Runnable, TimeInterface {
-    private final TreeMap<Time, List<ScheduleItem>> schedule;
-    private final Map<Time, List<ScheduleItem>> buffer;
+    private final TreeMap<TimeInterface, List<ScheduleItem>> schedule;
+    private final Map<TimeInterface, List<ScheduleItem>> buffer;
     private final ExecutorService executorService;
     private final Time current;
     private final Time max;
 
     public Scheduler(Time max) {
-        this.schedule = new TreeMap<Time, List<ScheduleItem>>();
-        this.buffer = new HashMap<Time, List<ScheduleItem>>();
+        this.schedule = new TreeMap<>();
+        this.buffer = new HashMap<>();
         this.executorService = Executors.newFixedThreadPool(2);
         this.current = new Time(0);
         this.max = max;
     }
 
-    public synchronized void schedule(Time time, ScheduleItem scheduleItem) {
+    public synchronized void after(TimeInterface time, ScheduleItem scheduleItem) {
+        schedule(current.after(time), scheduleItem);
+    }
+
+    public synchronized void every(TimeInterface time, ScheduleItem scheduleItem) {
+        schedule(current.after(time), sc -> {
+            scheduleItem.call(sc);
+            sc.every(time, scheduleItem);
+        });
+    }
+
+    public synchronized void schedule(TimeInterface time, ScheduleItem scheduleItem) {
         List<ScheduleItem> tmp = buffer.get(time);
         if (tmp == null) {
             tmp = new ArrayList<ScheduleItem>();

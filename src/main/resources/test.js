@@ -14,7 +14,8 @@ function getConfiguration() {
     return new Configure({
         parameters: [
             new Parameter("wheat", "optimal wheat", 3, 9),
-            new Parameter("hunger", "", 0.1, 2)
+            new Parameter("hunger", "", 0.1, 2),
+            new Parameter("robberies", "percent of lost shipments", 0.0, 0.2)
         ],
         samples: 5,
         sampler: new DumbSampler(),
@@ -30,7 +31,7 @@ function getConfiguration() {
             });
 
             var road = new Road("Road 1", town, field, {
-                "robberies": 0.02
+                "robberies": parameters["robberies"]
             });
 
             function register(a, b) {

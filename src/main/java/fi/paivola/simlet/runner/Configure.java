@@ -41,7 +41,7 @@ public class Configure {
     }
 
     public void updateParameterPane() {
-        if(parameterPane != null) {
+        if (parameterPane != null) {
             Platform.runLater(() -> {
                 parameterPane.clear();
                 parameterList.forEach(parameterPane::addParameter);
@@ -60,10 +60,10 @@ public class Configure {
     public boolean run_once_next() {
         run_once();
         sample++;
-        if(sample >= samples) {
+        if (sample >= samples) {
             sample = 0;
             run++;
-            if(run >= runs) {
+            if (run >= runs) {
                 return false;
             }
         }
@@ -71,7 +71,7 @@ public class Configure {
     }
 
     public double getPercentage() {
-        return ((double)sample + ((double)samples * (double)run)) / ((double)samples * (double)runs);
+        return ((double) sample + ((double) samples * (double) run)) / ((double) samples * (double) runs);
     }
 
     public void run() {

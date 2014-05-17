@@ -5,6 +5,7 @@ import fi.paivola.simlet.message.StringMessage;
 import fi.paivola.simlet.misc.Pos;
 import fi.paivola.simlet.model.PointModel;
 import fi.paivola.simlet.time.Scheduler;
+import fi.paivola.simlet.time.Time;
 import fi.paivola.simlet.time.Unit;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
@@ -35,7 +36,7 @@ public class Town extends PointModel {
 
     private void eat(Scheduler scheduler) {
         double consumption = people * hunger;
-        if(consumption > wheat) {
+        if (consumption > wheat) {
             consumption -= wheat;
             wheat = 0;
             people -= consumption * 0.95;
@@ -45,19 +46,13 @@ public class Town extends PointModel {
             wheat -= consumption;
             people += extra * 0.05;
         }
-        System.out.printf("@%d Population %f Wheat %f\n",scheduler.getTime().getAmount(), people, wheat);
-        registerEat(scheduler);
-    }
-
-    private void registerEat(Scheduler scheduler) {
-        scheduler.schedule(scheduler.getTime().after(Unit.DAY), (sc) -> {
-            this.eat(sc);
-        });
+        System.out.printf("@%d Population %f Wheat %f\n", scheduler.getTime().getAmount(), people, wheat);
     }
 
     @Override
     public void registerCallbacks(Scheduler scheduler) {
         super.registerCallbacks(scheduler);
-        registerEat(scheduler);
+        // Every day at 12:00
+        scheduler.after(new Time(12, Unit.HOUR), sc -> scheduler.every(Unit.DAY, s -> eat(s)));
     }
 }

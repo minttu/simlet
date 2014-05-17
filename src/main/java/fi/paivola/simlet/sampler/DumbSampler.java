@@ -14,7 +14,7 @@ public class DumbSampler implements Sampler {
             for (Parameter param : params) {
                 double min = param.getMin();
                 double max = param.getMax();
-                double val = min + new Random().nextDouble()*(max - min);
+                double val = min + new Random().nextDouble() * (max - min);
                 param.addValue(val);
                 map.put(param.getName(), val);
             }

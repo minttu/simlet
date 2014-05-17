@@ -19,6 +19,7 @@ public class Road extends ConnectionModel {
     private final double length;
     private final double speed;
     private final double travel_time;
+    private final double robberies;
 
     public Road(String name, PointModel model1, PointModel model2, ScriptObjectMirror settings) {
         super(name, settings);
@@ -30,24 +31,27 @@ public class Road extends ConnectionModel {
         speed = getOrDefault("speed", 1);
         travel_time = length / speed;
         shipments = new ArrayList<>();
+        robberies = getOrDefault("robberies", 0);
     }
 
     @Override
     public void handleMessage(Message message) {
-        if(connections.size() != 2) {
+        if (connections.size() != 2) {
             throw new IllegalStateException("A road is between two points. Always!");
         }
-        if(connections.contains(message.getSender())) {
+        if (connections.contains(message.getSender())) {
             int ind = connections.indexOf(message.getSender());
-            Model target = connections.get((ind==0?1:0));
-            shipments.add(new AbstractMap.SimpleEntry<>(message, target));
-            scheduler.schedule(scheduler.getTime().after(((int) travel_time)), (sc) -> {
-                if(shipments.size() < 1) {
-                    return;
-                }
-                Map.Entry<Message, Model> first = shipments.remove(0);
-                first.getValue().addMessage(first.getKey());
-            });
+            Model target = connections.get((ind == 0 ? 1 : 0));
+            if (new Random().nextDouble() >= robberies) {
+                shipments.add(new AbstractMap.SimpleEntry<>(message, target));
+                scheduler.schedule(scheduler.getTime().after(((int) travel_time)), (sc) -> {
+                    if (shipments.size() < 1) {
+                        return;
+                    }
+                    Map.Entry<Message, Model> first = shipments.remove(0);
+                    first.getValue().addMessage(first.getKey());
+                });
+            }
         }
     }
 
