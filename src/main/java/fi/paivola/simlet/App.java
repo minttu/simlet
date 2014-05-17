@@ -21,10 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -45,12 +42,15 @@ public class App extends Application {
         BorderPane root = new BorderPane();
 
         // Other panes
-        final StatusPane statusPane = new StatusPane();
+        // final StatusPane statusPane = new StatusPane();
         final WelcomePane welcomePane = new WelcomePane();
         final ParameterPane parameterPane = new ParameterPane();
-        final CodePane codePane = new CodePane();
+        final ProgressBar progressBar = new ProgressBar();
+        final CodePane codePane = new CodePane(progressBar);
         final MenuBar menuBar = new MenuBar();
         final TabPane tabPane = new TabPane();
+
+        progressBar.setPrefWidth(9999);
 
         Configure.parameterPane = parameterPane;
 
@@ -96,7 +96,8 @@ public class App extends Application {
 
         root.setTop(menuBar);
         root.setCenter(tabPane);
-        root.setBottom(statusPane);
+        root.setBottom(progressBar);
+        // root.setBottom(statusPane);
 
         primaryStage.setTitle("SIMLet");
         primaryStage.setScene(new Scene(root, 400, 400));

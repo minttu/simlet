@@ -2,19 +2,18 @@ package fi.paivola.simlet.ui;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import fi.paivola.simlet.runner.Configure;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -29,13 +28,15 @@ public class CodePane extends BorderPane implements Tabbable {
     private final WebView webView;
     private final ToolBar toolBar;
     private final Label fileLabel;
+    private final ProgressBar progressBar;
     private Tab tab;
     private String code;
     private File file;
     private final Button saveButton;
     private final Button evalButton;
 
-    public CodePane() {
+    public CodePane(ProgressBar progressBar) {
+        this.progressBar = progressBar;
         this.webView = new WebView();
         this.webView.setContextMenuEnabled(false);
         this.fileLabel = new Label("");
@@ -62,17 +63,25 @@ public class CodePane extends BorderPane implements Tabbable {
 
     public void eval() {
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-        ///Thread thread = new Thread(() -> {
-        // System.out.println("start"); // !!!!
+        Configure configure = null;
         try {
             engine.eval(getCode());
+            Invocable invocable = (Invocable) engine;
+            configure = (Configure)invocable.invokeFunction("getConfiguration");
         } catch (ScriptException e) {
             e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
         }
-        // System.out.println("end");
-        //});
-        // thread.setDaemon(true);
-        //thread.start();
+        if(configure != null) {
+            progressBar.progressProperty().bind(configure.progressProperty());
+            Thread thread = new Thread(configure);
+            thread.setUncaughtExceptionHandler((t, e) -> {
+                e.printStackTrace();
+            });
+            thread.setDaemon(true);
+            thread.start();
+        }
     }
 
     public void save() {

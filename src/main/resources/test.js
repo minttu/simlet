@@ -10,29 +10,34 @@ var Field = Java.type("fi.paivola.simlet.model.example.Field");
 var Road = Java.type("fi.paivola.simlet.model.example.Road");
 var Configure = Java.type("fi.paivola.simlet.runner.Configure");
 
-new Configure({
-    parameters: [
-        new Parameter("wheat", "optimal wheat", 3, 9),
-        new Parameter("hunger", "", 0.1, 2)
-    ],
-    samples: 5,
-    sampler: new DumbSampler(),
-    runs: 20,
-    ends: new Time(20, Unit.DAY),
-    plan: function(scheduler, parameters) {
-        var town = new Town("Town 1", new Pos(32, 32.1), 30.0,
-                           {"hunger": parameters["hunger"]});
+function getConfiguration() {
+    return new Configure({
+        parameters: [
+            new Parameter("wheat", "optimal wheat", 3, 9),
+            new Parameter("hunger", "", 0.1, 2)
+        ],
+        samples: 5,
+        sampler: new DumbSampler(),
+        runs: 20,
+        ends: new Time(20, Unit.DAY),
+        plan: function (scheduler, parameters) {
+            var town = new Town("Town 1", new Pos(32, 32.1), 30.0, {
+                "hunger": parameters["hunger"]
+            });
 
-        var field = new Field("Field 1", new Pos(32.1, 32), 15.0,
-                             {"wheat": parameters["wheat"]});
+            var field = new Field("Field 1", new Pos(32.1, 32), 15.0, {
+                "wheat": parameters["wheat"]
+            });
 
-        var road = new Road("Road 1",
-                             town,
-                             field,
-                           {"robberies": 0.02});
+            var road = new Road("Road 1",
+                town,
+                field, {
+                    "robberies": 0.02
+                });
 
-        town.registerCallbacks(scheduler);
-        field.registerCallbacks(scheduler);
-        road.registerCallbacks(scheduler);
-    }
-}).run();
+            town.registerCallbacks(scheduler);
+            field.registerCallbacks(scheduler);
+            road.registerCallbacks(scheduler);
+        }
+    });
+}

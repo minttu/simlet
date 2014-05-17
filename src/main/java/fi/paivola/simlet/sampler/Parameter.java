@@ -1,5 +1,7 @@
 package fi.paivola.simlet.sampler;
 
+import javafx.beans.property.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +45,28 @@ public class Parameter {
 
     public List<Double> getValues() {
         return values;
+    }
+
+    public StringProperty nameProperty() {
+        return new SimpleStringProperty(name);
+    }
+
+    public StringProperty descriptionProperty() {
+        return new SimpleStringProperty(description);
+    }
+
+    public DoubleProperty minProperty() {
+        return new SimpleDoubleProperty(min);
+    }
+
+    public DoubleProperty maxProperty() {
+        return new SimpleDoubleProperty(max);
+    }
+
+    public ListProperty<Double> valuesProperty() {
+        SimpleListProperty<Double> dd =  new SimpleListProperty<>();
+        dd.addAll(values);
+        return dd;
     }
 
     @Override

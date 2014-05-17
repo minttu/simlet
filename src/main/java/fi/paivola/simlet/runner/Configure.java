@@ -6,6 +6,8 @@ import fi.paivola.simlet.time.ScheduleItem;
 import fi.paivola.simlet.time.Scheduler;
 import fi.paivola.simlet.time.Time;
 import fi.paivola.simlet.ui.ParameterPane;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Created by juhani on 16.5.2014.
  */
-public class Configure implements Runnable {
+public class Configure extends Task<Integer> {
     private final ScriptObjectMirror param;
     public static ParameterPane parameterPane = null;
 
@@ -28,25 +30,34 @@ public class Configure implements Runnable {
     }
 
     @Override
-    public void run() {
+    public Integer call() {
         Sampler sampler = (Sampler) param.get("sampler");
         List<Parameter> parameterList = ((ScriptObjectMirror) param.get("parameters")).values().stream().map(obj -> (Parameter) obj).collect(Collectors.toList());
+
+        int runs = (int) param.get("runs");
 
         int samples = (int) param.get("samples");
         List<Map<String, Double>> mapList = sampler.CreateSamples(parameterList, samples);
 
         if(parameterPane != null) {
-            parameterList.forEach(parameterPane::addParameter);
+            Platform.runLater(() -> {
+                parameterPane.clear();
+                parameterList.forEach(parameterPane::addParameter);
+                parameterPane.update();
+            });
         }
 
-        int run = 0;
-
-        for (int i = 0; i < samples; i++) {
-            int sample = i;
-            Scheduler scheduler = new Scheduler((Time) param.getMember("ends"));
-            param.callMember("plan", scheduler, mapList.get(sample));
-            System.out.printf(" --- \nRun %d Sample %d\n --- \n", run, sample);
-            scheduler.run();
+        for (int run = 0; run < runs; run++) {
+            for (int sample = 0; sample < samples; sample++) {
+                Scheduler scheduler = new Scheduler((Time) param.getMember("ends"));
+                param.callMember("plan", scheduler, mapList.get(sample));
+                System.out.printf(" --- \nRun %d Sample %d\n --- \n", run, sample);
+                scheduler.run();
+                updateProgress(sample + (samples * run), samples * runs);
+            }
         }
+        updateProgress(1, 1);
+
+        return 0;
     }
 }
