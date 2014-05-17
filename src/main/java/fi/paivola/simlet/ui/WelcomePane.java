@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * Created by juhani on 5/14/14.
  */
-public class WelcomePane extends BorderPane {
+public class WelcomePane extends BorderPane implements Tabbable {
     public WelcomePane() {
         WebView webView = new WebView();
         try {

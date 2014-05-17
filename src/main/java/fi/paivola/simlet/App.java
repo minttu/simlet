@@ -8,10 +8,12 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import fi.paivola.simlet.model.Model;
 import fi.paivola.simlet.model.example.Town;
+import fi.paivola.simlet.runner.Configure;
 import fi.paivola.simlet.time.Scheduler;
 import fi.paivola.simlet.time.Time;
 import fi.paivola.simlet.time.Unit;
 import fi.paivola.simlet.ui.CodePane;
+import fi.paivola.simlet.ui.ParameterPane;
 import fi.paivola.simlet.ui.StatusPane;
 import fi.paivola.simlet.ui.WelcomePane;
 import javafx.application.Application;
@@ -39,23 +41,18 @@ public class App extends Application {
     @Override
     public void start(final Stage primaryStage) throws IOException {
 
-        /*Model m = new Model("asd");
-        Model n = new Model("dsa");
-        Scheduler scheduler = new Scheduler();
-        scheduler.schedule(new Time(Unit.DAY), m);
-        scheduler.schedule(new Time(24, Unit.HOUR), n);
-        Thread thread = new Thread(scheduler);
-        thread.start();*/
-
         // Main pane
         BorderPane root = new BorderPane();
 
         // Other panes
         final StatusPane statusPane = new StatusPane();
         final WelcomePane welcomePane = new WelcomePane();
+        final ParameterPane parameterPane = new ParameterPane();
         final CodePane codePane = new CodePane();
         final MenuBar menuBar = new MenuBar();
         final TabPane tabPane = new TabPane();
+
+        Configure.parameterPane = parameterPane;
 
         // Menu
         Menu menuFile = new Menu("File");
@@ -81,6 +78,7 @@ public class App extends Application {
         menuFile.getItems().add(itemClose);
         itemClose.setOnAction(event -> {
             codePane.closeFile();
+            parameterPane.clear();
             tabPane.getSelectionModel().select(0);
         });
 
@@ -94,12 +92,11 @@ public class App extends Application {
         tabPane.setSide(Side.BOTTOM);
         tabPane.getTabs().add(welcomePane.getTab());
         tabPane.getTabs().add(codePane.getTab());
+        tabPane.getTabs().add(parameterPane.getTab());
 
         root.setTop(menuBar);
         root.setCenter(tabPane);
         root.setBottom(statusPane);
-
-        // for (int i = 0; i < 100; i++) statusPane.log("hai: ", i);
 
         primaryStage.setTitle("SIMLet");
         primaryStage.setScene(new Scene(root, 400, 400));

@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 /**
  * Created by juhani on 5/14/14.
  */
-public class CodePane extends BorderPane {
+public class CodePane extends BorderPane implements Tabbable {
     private final WebView webView;
     private final ToolBar toolBar;
     private final Label fileLabel;

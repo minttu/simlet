@@ -5,6 +5,7 @@ import fi.paivola.simlet.sampler.Sampler;
 import fi.paivola.simlet.time.ScheduleItem;
 import fi.paivola.simlet.time.Scheduler;
 import fi.paivola.simlet.time.Time;
+import fi.paivola.simlet.ui.ParameterPane;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  */
 public class Configure implements Runnable {
     private final ScriptObjectMirror param;
+    public static ParameterPane parameterPane = null;
 
     public Configure(ScriptObjectMirror param) {
         this.param = param;
@@ -33,9 +35,8 @@ public class Configure implements Runnable {
         int samples = (int) param.get("samples");
         List<Map<String, Double>> mapList = sampler.CreateSamples(parameterList, samples);
 
-        for(Parameter parameter : parameterList) {
-            System.out.println(parameter.getName());
-            System.out.println(parameter.getValues());
+        if(parameterPane != null) {
+            parameterList.forEach(parameterPane::addParameter);
         }
 
         int run = 0;
