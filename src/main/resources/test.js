@@ -29,15 +29,19 @@ function getConfiguration() {
                 "wheat": parameters["wheat"]
             });
 
-            var road = new Road("Road 1",
-                town,
-                field, {
+            var road = new Road("Road 1", town, field, {
                     "robberies": 0.02
-                });
+            });
 
-            town.registerCallbacks(scheduler);
-            field.registerCallbacks(scheduler);
-            road.registerCallbacks(scheduler);
+            function register(a, b) {
+                for(c in b) {
+                    b[c].registerCallbacks(a);
+                }
+            }
+
+            register(scheduler, [
+                town, field, road
+            ]);
         }
     });
 }

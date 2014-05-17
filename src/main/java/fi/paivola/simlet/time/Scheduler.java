@@ -1,5 +1,7 @@
 package fi.paivola.simlet.time;
 
+import fi.paivola.simlet.model.Model;
+
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
