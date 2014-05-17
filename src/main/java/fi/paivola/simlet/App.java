@@ -90,9 +90,7 @@ public class App extends Application {
 
         // Tabs
         tabPane.setSide(Side.BOTTOM);
-        tabPane.getTabs().add(welcomePane.getTab());
-        tabPane.getTabs().add(codePane.getTab());
-        tabPane.getTabs().add(parameterPane.getTab());
+        tabPane.getTabs().addAll(welcomePane.getTab(), codePane.getTab(), parameterPane.getTab());
 
         root.setTop(menuBar);
         root.setCenter(tabPane);

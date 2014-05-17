@@ -23,23 +23,27 @@ public class ParameterPane extends BorderPane implements Tabbable {
     private final Tab tab;
     private final List<Parameter> parameterList;
     private final ObservableList<Parameter> data;
-    private final TableView tableView;
+    private TableView tableView;
 
     public ParameterPane() {
         tab = new Tab("Parameters");
         tab.setContent(this);
         tab.setDisable(true);
         tab.setClosable(false);
+        tab.setOnSelectionChanged((e) -> {
+            if(tab.isSelected()) {
+                update();
+            }
+        });
         parameterList = new ArrayList<>();
         data = FXCollections.observableArrayList();
-
-        tableView = new TableView();
-        tableView.setItems(data);
         update();
-        this.setCenter(tableView);
     }
 
     public void update() {
+        tableView = new TableView();
+        tableView.setItems(data);
+
         TableColumn name = new TableColumn("Name");
         name.setCellValueFactory(new PropertyValueFactory("name"));
 
@@ -66,6 +70,8 @@ public class ParameterPane extends BorderPane implements Tabbable {
         }
 
         tableView.getColumns().addAll(name, description, min, max, valuesColumn);
+
+        this.setCenter(tableView);
     }
 
     public void addParameter(Parameter parameter) {
@@ -76,7 +82,7 @@ public class ParameterPane extends BorderPane implements Tabbable {
 
     public void clear() {
         parameterList.clear();
-        tableView.getColumns().clear();
+        tableView = null;
         data.clear();
         tab.setDisable(true);
     }

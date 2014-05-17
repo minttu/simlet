@@ -2,23 +2,14 @@ package fi.paivola.simlet.ui;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import fi.paivola.simlet.runner.Configure;
+import fi.paivola.simlet.runner.ConfigureFactory;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.io.*;
-import java.nio.file.Files;
 import java.util.function.Consumer;
 
 /**
@@ -33,7 +24,8 @@ public class CodePane extends BorderPane implements Tabbable {
     private String code;
     private File file;
     private final Button saveButton;
-    private final Button evalButton;
+    private final Button parametersButton;
+    private final Button runButton;
 
     public CodePane(ProgressBar progressBar) {
         this.progressBar = progressBar;
@@ -51,37 +43,48 @@ public class CodePane extends BorderPane implements Tabbable {
 
         saveButton = new Button("Save");
         saveButton.setOnAction(event -> save());
-        evalButton = new Button("Eval");
-        evalButton.setOnAction(event -> eval());
+        parametersButton = new Button("Parameters");
+        parametersButton.setOnAction(event -> resolveParameters());
+        runButton = new Button("Run");
+        runButton.setOnAction(event -> runSimulation());
 
         this.toolBar = new ToolBar();
-        toolBar.getItems().add(saveButton);
-        toolBar.getItems().add(evalButton);
-        toolBar.getItems().add(fileLabel);
+        toolBar.getItems().addAll(saveButton, parametersButton, runButton, fileLabel);
         this.setTop(toolBar);
     }
 
-    public void eval() {
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
-        Configure configure = null;
-        try {
-            engine.eval(getCode());
-            Invocable invocable = (Invocable) engine;
-            configure = (Configure)invocable.invokeFunction("getConfiguration");
-        } catch (ScriptException e) {
+    public void runSimulation() {
+        final String src = getCode();
+        Thread thread = new Thread(new Task<Integer>() {
+            @Override
+            protected Integer call() throws Exception {
+                new ConfigureFactory(src).create().run();
+                return 0;
+            }
+        });
+
+        thread.setUncaughtExceptionHandler((t, e) -> {
             e.printStackTrace();
-        } catch (NoSuchMethodException e) {
+        });
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    public void resolveParameters() {
+        final String src = getCode();
+        Thread thread = new Thread(new Task<Integer>() {
+            @Override
+            protected Integer call() throws Exception {
+                new ConfigureFactory(src).create().updateParameterPane();
+                return 0;
+            }
+        });
+
+        thread.setUncaughtExceptionHandler((t, e) -> {
             e.printStackTrace();
-        }
-        if(configure != null) {
-            progressBar.progressProperty().bind(configure.progressProperty());
-            Thread thread = new Thread(configure);
-            thread.setUncaughtExceptionHandler((t, e) -> {
-                e.printStackTrace();
-            });
-            thread.setDaemon(true);
-            thread.start();
-        }
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 
     public void save() {

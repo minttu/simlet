@@ -21,31 +21,36 @@ import java.util.stream.Collectors;
 /**
  * Created by juhani on 16.5.2014.
  */
-public class Configure extends Task<Integer> {
+public class Configure {
     private final ScriptObjectMirror param;
+    private final List<Parameter> parameterList;
+    private final Sampler sampler;
+    private final int runs;
+    private final int samples;
+    private final List<Map<String, Double>> mapList;
     public static ParameterPane parameterPane = null;
+
 
     public Configure(ScriptObjectMirror param) {
         this.param = param;
+        parameterList = ((ScriptObjectMirror) param.get("parameters")).values().stream().map(obj -> (Parameter) obj).collect(Collectors.toList());
+        sampler = (Sampler) param.get("sampler");
+        runs = (int) param.get("runs");
+        samples = (int) param.get("samples");
+        mapList = sampler.CreateSamples(parameterList, samples);
     }
 
-    @Override
-    public Integer call() {
-        Sampler sampler = (Sampler) param.get("sampler");
-        List<Parameter> parameterList = ((ScriptObjectMirror) param.get("parameters")).values().stream().map(obj -> (Parameter) obj).collect(Collectors.toList());
-
-        int runs = (int) param.get("runs");
-
-        int samples = (int) param.get("samples");
-        List<Map<String, Double>> mapList = sampler.CreateSamples(parameterList, samples);
-
+    public void updateParameterPane() {
         if(parameterPane != null) {
             Platform.runLater(() -> {
                 parameterPane.clear();
                 parameterList.forEach(parameterPane::addParameter);
-                parameterPane.update();
+                // parameterPane.update();
             });
         }
+    }
+
+    public void run() {
 
         for (int run = 0; run < runs; run++) {
             for (int sample = 0; sample < samples; sample++) {
@@ -53,11 +58,9 @@ public class Configure extends Task<Integer> {
                 param.callMember("plan", scheduler, mapList.get(sample));
                 System.out.printf(" --- \nRun %d Sample %d\n --- \n", run, sample);
                 scheduler.run();
-                updateProgress(sample + (samples * run), samples * runs);
+                // updateProgress(sample + (samples * run), samples * runs);
             }
         }
-        updateProgress(1, 1);
-
-        return 0;
+        // updateProgress(1, 1);
     }
 }
