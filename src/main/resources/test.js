@@ -18,7 +18,7 @@ function getConfiguration() {
         ],
         samples: 5,
         sampler: new DumbSampler(),
-        runs: 20,
+        runs: 1,
         ends: new Time(20, Unit.DAY),
         plan: function (scheduler, parameters) {
             var town = new Town("Town 1", new Pos(32, 32.1), 30.0, {
@@ -30,7 +30,7 @@ function getConfiguration() {
             });
 
             var road = new Road("Road 1", town, field, {
-                    "robberies": 0.02
+                "robberies": 0.02
             });
 
             function register(a, b) {

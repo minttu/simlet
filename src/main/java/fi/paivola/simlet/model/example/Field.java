@@ -28,18 +28,17 @@ public class Field extends PointModel {
     }
 
     private void harvest(Scheduler scheduler) {
-        double got = new Random().nextDouble() * 1000 * size;
-        System.out.printf("H %f\n", got);
+        double got = new Random().nextDouble() * 1000 * size * wheat;
+        System.out.printf("@%d Harvested %f\n", scheduler.getTime().getAmount(), got);
         double each = got / connections.size();
         for (Model model : connections) {
-            System.out.println("Field sent out a shipment");
             model.addMessage(new StringMessage("wheat", "" + (each), this));
         }
         registerHarvest(scheduler);
     }
 
     private void registerHarvest(Scheduler scheduler) {
-        scheduler.schedule(scheduler.getTime().after(20, Unit.HOUR), (sc) -> {
+        scheduler.schedule(scheduler.getTime().after(Unit.DAY), (sc) -> {
             harvest(sc);
         });
     }

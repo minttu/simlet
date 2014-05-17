@@ -19,8 +19,7 @@ public class Town extends PointModel {
     public Town(String name, Pos pos, double size, ScriptObjectMirror settings) {
         super(name, pos, size, settings);
         hunger = getOrDefault("hunger", 1);
-        people = size * 1000;
-        wheat = people;
+        people = wheat = size * 1000;
     }
 
     @Override
@@ -28,7 +27,6 @@ public class Town extends PointModel {
         if (message instanceof StringMessage) {
             switch (((StringMessage) message).getName()) {
                 case "wheat":
-                    System.out.println("Town got a wheat shipment");
                     wheat += Double.parseDouble(((StringMessage) message).getString());
                     break;
             }
@@ -36,11 +34,18 @@ public class Town extends PointModel {
     }
 
     private void eat(Scheduler scheduler) {
-        double newwheat = wheat - people * hunger;
-        double newpeople = people - newwheat;
-        System.out.printf("P %f->%f W %f->%f\n", people, newpeople, wheat, newwheat);
-        people = newpeople;
-        wheat = newwheat;
+        double consumption = people * hunger;
+        if(consumption > wheat) {
+            consumption -= wheat;
+            wheat = 0;
+            people -= consumption * 0.95;
+            consumption = 0;
+        } else {
+            double extra = wheat - consumption;
+            wheat -= consumption;
+            people += extra * 0.05;
+        }
+        System.out.printf("@%d Population %f Wheat %f\n",scheduler.getTime().getAmount(), people, wheat);
         registerEat(scheduler);
     }
 

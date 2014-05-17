@@ -2,6 +2,7 @@ package fi.paivola.simlet.ui;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import fi.paivola.simlet.runner.Configure;
 import fi.paivola.simlet.runner.ConfigureFactory;
 import javafx.concurrent.Task;
 import javafx.scene.control.*;
@@ -55,17 +56,23 @@ public class CodePane extends BorderPane implements Tabbable {
 
     public void runSimulation() {
         final String src = getCode();
-        Thread thread = new Thread(new Task<Integer>() {
+        Task task = new Task<Integer>() {
             @Override
             protected Integer call() throws Exception {
-                new ConfigureFactory(src).create().run();
+                Configure configure = new ConfigureFactory(src).create();
+                updateProgress(0, 1);
+                while (configure.run_once_next()) {
+                    updateProgress(configure.getPercentage(), 1);
+                }
+                updateProgress(1, 1);
                 return 0;
             }
-        });
-
+        };
+        Thread thread = new Thread(task);
         thread.setUncaughtExceptionHandler((t, e) -> {
             e.printStackTrace();
         });
+        progressBar.progressProperty().bind(task.progressProperty());
         thread.setDaemon(true);
         thread.start();
     }

@@ -43,20 +43,13 @@ public class Scheduler implements Runnable, TimeInterface {
             return false;
         }
         current.addAmount(schedule.firstKey().getAmount() - current.getAmount());
-        System.out.println(current);
+        // System.out.println(current);
         if (current.getAmount() > max.getAmount()) {
             return false;
         }
-        //CountDownLatch latch = new CountDownLatch(schedule.firstEntry().getValue().size());
         for (ScheduleItem si : schedule.firstEntry().getValue()) {
-            //executorService.execute(new RunnableItem(si, this, latch));
             si.call(this);
         }
-        /*try {
-            latch.await();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }*/
         schedule.remove(schedule.firstKey());
         return true;
     }

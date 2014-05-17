@@ -41,13 +41,11 @@ public class Road extends ConnectionModel {
             int ind = connections.indexOf(message.getSender());
             Model target = connections.get((ind==0?1:0));
             shipments.add(new AbstractMap.SimpleEntry<>(message, target));
-            System.out.println("Road got a new shipment");
             scheduler.schedule(scheduler.getTime().after(((int) travel_time)), (sc) -> {
                 if(shipments.size() < 1) {
                     return;
                 }
                 Map.Entry<Message, Model> first = shipments.remove(0);
-                System.out.println("Road passed on a shipment");
                 first.getValue().addMessage(first.getKey());
             });
         }
