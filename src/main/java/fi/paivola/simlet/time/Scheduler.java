@@ -13,12 +13,14 @@ public class Scheduler implements Runnable, TimeInterface {
     private final Map<Time, List<ScheduleItem>> buffer;
     private final ExecutorService executorService;
     private final Time current;
+    private final Time max;
 
-    public Scheduler() {
+    public Scheduler(Time max) {
         this.schedule = new TreeMap<Time, List<ScheduleItem>>();
         this.buffer = new HashMap<Time, List<ScheduleItem>>();
         this.executorService = Executors.newFixedThreadPool(2);
         this.current = new Time(0);
+        this.max = max;
     }
 
     public synchronized void schedule(Time time, ScheduleItem scheduleItem) {
@@ -32,30 +34,36 @@ public class Scheduler implements Runnable, TimeInterface {
         }
     }
 
-    private void step() {
+    public boolean step() {
         schedule.putAll(buffer);
         buffer.clear();
         if (schedule.isEmpty()) {
-            return;
+            return false;
         }
         current.addAmount(schedule.firstKey().getAmount() - current.getAmount());
         System.out.println(current);
-        CountDownLatch latch = new CountDownLatch(schedule.firstEntry().getValue().size());
-        for (ScheduleItem si : schedule.firstEntry().getValue()) {
-            executorService.execute(new RunnableItem(si, this, latch));
+        if (current.getAmount() > max.getAmount()) {
+            return false;
         }
-        try {
+        //CountDownLatch latch = new CountDownLatch(schedule.firstEntry().getValue().size());
+        for (ScheduleItem si : schedule.firstEntry().getValue()) {
+            //executorService.execute(new RunnableItem(si, this, latch));
+            si.call(this);
+        }
+        /*try {
             latch.await();
         } catch (InterruptedException ex) {
-
-        }
+            ex.printStackTrace();
+        }*/
         schedule.remove(schedule.firstKey());
-        step();
+        return true;
     }
 
     @Override
     public void run() {
-        step();
+        while (step()) {
+
+        }
     }
 
     @Override

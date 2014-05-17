@@ -7,6 +7,7 @@ package fi.paivola.simlet;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import fi.paivola.simlet.model.Model;
+import fi.paivola.simlet.model.example.Town;
 import fi.paivola.simlet.time.Scheduler;
 import fi.paivola.simlet.time.Time;
 import fi.paivola.simlet.time.Unit;
@@ -50,9 +51,9 @@ public class App extends Application {
         BorderPane root = new BorderPane();
 
         // Other panes
+        final StatusPane statusPane = new StatusPane();
         final WelcomePane welcomePane = new WelcomePane();
         final CodePane codePane = new CodePane();
-        final StatusPane statusPane = new StatusPane();
         final MenuBar menuBar = new MenuBar();
         final TabPane tabPane = new TabPane();
 
@@ -62,42 +63,31 @@ public class App extends Application {
 
         MenuItem itemOpen = new MenuItem("Open");
         menuFile.getItems().add(itemOpen);
-        itemOpen.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                FileChooser fileChooser = new FileChooser();
+        itemOpen.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
 
-                //Set extension filter
-                FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JavaScript (*.js)", "*.js");
-                fileChooser.getExtensionFilters().add(extFilter);
+            //Set extension filter
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JavaScript (*.js)", "*.js");
+            fileChooser.getExtensionFilters().add(extFilter);
 
-                File file = fileChooser.showOpenDialog(null);
-                if(file != null) {
-                    codePane.setFile(file);
-                    tabPane.getSelectionModel().select(1);
-                }
+            File file = fileChooser.showOpenDialog(null);
+            if (file != null) {
+                codePane.setFile(file);
+                tabPane.getSelectionModel().select(1);
             }
         });
 
         MenuItem itemClose = new MenuItem("Close");
         menuFile.getItems().add(itemClose);
-        itemClose.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                codePane.closeFile();
-                tabPane.getSelectionModel().select(0);
-            }
+        itemClose.setOnAction(event -> {
+            codePane.closeFile();
+            tabPane.getSelectionModel().select(0);
         });
 
 
         MenuItem itemExit = new MenuItem("Exit");
         menuFile.getItems().add(itemExit);
-        itemExit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                primaryStage.close();
-            }
-        });
+        itemExit.setOnAction(event -> primaryStage.close());
 
 
         // Tabs
@@ -109,7 +99,7 @@ public class App extends Application {
         root.setCenter(tabPane);
         root.setBottom(statusPane);
 
-        for (int i = 0; i < 100; i++) statusPane.log("hai: ", i);
+        // for (int i = 0; i < 100; i++) statusPane.log("hai: ", i);
 
         primaryStage.setTitle("SIMLet");
         primaryStage.setScene(new Scene(root, 400, 400));

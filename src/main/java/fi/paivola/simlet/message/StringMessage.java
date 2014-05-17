@@ -6,10 +6,12 @@ package fi.paivola.simlet.message;
 public class StringMessage implements Message {
 
     private final MessageBus sender;
-    private final String string;
+    private final String name;
+    private final String value;
 
-    public StringMessage(String string, MessageBus sender) {
-        this.string = string;
+    public StringMessage(String name, String value, MessageBus sender) {
+        this.name = name;
+        this.value = value;
         this.sender = sender;
     }
 
@@ -18,13 +20,17 @@ public class StringMessage implements Message {
         return sender;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public Object getObject() {
-        return string;
+        return value;
     }
 
     public String getString() {
-        return string;
+        return value;
     }
 
 }

@@ -7,7 +7,7 @@ public class Time implements TimeInterface, Comparable<Time> {
     private int amount;
 
     public Time(int amount) {
-        this.amount = amount;
+        this.amount = Math.max(0, amount);
     }
 
     public Time(int times, Unit unit) {
@@ -19,7 +19,7 @@ public class Time implements TimeInterface, Comparable<Time> {
     }
 
     public void addAmount(int amount) {
-        this.amount += amount;
+        this.amount += Math.max(0, amount);
     }
 
     public void addAmount(int times, Unit unit) {

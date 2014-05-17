@@ -4,6 +4,7 @@ import fi.paivola.simlet.message.Message;
 import fi.paivola.simlet.message.MessageBus;
 import fi.paivola.simlet.time.ScheduleItem;
 import fi.paivola.simlet.time.Scheduler;
+import fi.paivola.simlet.time.Time;
 import fi.paivola.simlet.time.Unit;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
@@ -13,30 +14,38 @@ import java.util.List;
 /**
  * Created by juhani on 5/14/14.
  */
-public abstract class Model extends MessageBus implements ScheduleItem {
+public abstract class Model extends MessageBus {
     private final String name;
-    private final List<Model> connections;
+    public final List<Model> connections;
     protected final ScriptObjectMirror settings;
-    private int runs;
+    protected Scheduler scheduler;
 
     public Model(String name, ScriptObjectMirror settings) {
         this.name = name;
         this.connections = new ArrayList<Model>();
         this.settings = settings;
-        this.runs = 0;
+    }
+
+    public double getOrDefault(String name, double def) {
+        Object real = settings.get(name);
+        return (real == null ? def : (double) real);
     }
 
     @Override
-    public void call(Scheduler scheduler) {
+    public synchronized void addMessage(Message message) {
+        super.addMessage(message);
         updateMessages();
-        for (Message message : getAllMessages()) {
-            System.out.println(name + ": \"" + message.getObject().toString());
-        }
-        runs++;
-        System.out.println(name + ": \"" + runs + "\"");
-        if (runs < 100) {
-            scheduler.schedule(scheduler.getTime().after(Unit.DAY), this);
-        }
     }
 
+    @Override
+    public void updateMessages() {
+        super.updateMessages();
+        getAllMessages().forEach(this::handleMessage);
+    }
+
+    public abstract void handleMessage(Message message);
+
+    public void registerCallbacks(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
 }
