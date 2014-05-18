@@ -1,7 +1,7 @@
 package fi.paivola.simlet.misc;
 
 /**
- * Created by juhani on 14.5.2014.
+ * Represents a position.
  */
 public class Pos {
     private final Double x;

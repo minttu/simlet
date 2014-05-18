@@ -5,7 +5,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.text.Font;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -13,24 +12,6 @@ import java.io.PrintStream;
  * Created by juhani on 5/14/14.
  */
 public class StatusPane extends TitledPane {
-    interface PrintFunction {
-        public void print(String str);
-    }
-
-    class Out extends OutputStream {
-
-        private final PrintFunction printFunction;
-
-        public Out(PrintFunction printFunction) {
-            this.printFunction = printFunction;
-        }
-
-        @Override
-        public void write(int b) {
-            printFunction.print(String.valueOf((char) b));
-        }
-    }
-
     private final TextArea content;
 
     public StatusPane() {
@@ -53,5 +34,23 @@ public class StatusPane extends TitledPane {
         content.setEditable(false);
         this.setText("Status log");
         this.setContent(content);
+    }
+
+    interface PrintFunction {
+        public void print(String str);
+    }
+
+    class Out extends OutputStream {
+
+        private final PrintFunction printFunction;
+
+        public Out(PrintFunction printFunction) {
+            this.printFunction = printFunction;
+        }
+
+        @Override
+        public void write(int b) {
+            printFunction.print(String.valueOf((char) b));
+        }
     }
 }

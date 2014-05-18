@@ -4,21 +4,11 @@ package fi.paivola.simlet;
  * Created by juhani on 5/13/14.
  */
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
-import fi.paivola.simlet.model.Model;
-import fi.paivola.simlet.model.example.Town;
 import fi.paivola.simlet.runner.Configure;
-import fi.paivola.simlet.time.Scheduler;
-import fi.paivola.simlet.time.Time;
-import fi.paivola.simlet.time.Unit;
 import fi.paivola.simlet.ui.CodePane;
 import fi.paivola.simlet.ui.ParameterPane;
-import fi.paivola.simlet.ui.StatusPane;
 import fi.paivola.simlet.ui.WelcomePane;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;

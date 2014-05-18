@@ -41,6 +41,6 @@ public class Field extends PointModel {
     public void registerCallbacks(Scheduler scheduler) {
         super.registerCallbacks(scheduler);
         // Every day at 7:00
-        scheduler.after(new Time(7, Unit.HOUR), sc -> scheduler.every(Unit.DAY, s -> harvest(s)));
+        scheduler.after(new Time(7, Unit.HOUR), sc -> scheduler.every(Unit.DAY, this::harvest));
     }
 }

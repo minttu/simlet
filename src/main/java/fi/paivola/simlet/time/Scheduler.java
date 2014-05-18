@@ -1,14 +1,11 @@
 package fi.paivola.simlet.time;
 
-import fi.paivola.simlet.model.Model;
-
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Created by juhani on 5/14/14.
+ * Scheduler makes things really happen.
  */
 public class Scheduler implements Runnable, TimeInterface {
     private final TreeMap<TimeInterface, List<ScheduleItem>> schedule;
@@ -25,18 +22,18 @@ public class Scheduler implements Runnable, TimeInterface {
         this.max = max;
     }
 
-    public synchronized void after(TimeInterface time, ScheduleItem scheduleItem) {
+    public void after(TimeInterface time, ScheduleItem scheduleItem) {
         schedule(current.after(time), scheduleItem);
     }
 
-    public synchronized void every(TimeInterface time, ScheduleItem scheduleItem) {
+    public void every(TimeInterface time, ScheduleItem scheduleItem) {
         schedule(current.after(time), sc -> {
             scheduleItem.call(sc);
             sc.every(time, scheduleItem);
         });
     }
 
-    public synchronized void schedule(TimeInterface time, ScheduleItem scheduleItem) {
+    public void schedule(TimeInterface time, ScheduleItem scheduleItem) {
         List<ScheduleItem> tmp = buffer.get(time);
         if (tmp == null) {
             tmp = new ArrayList<ScheduleItem>();

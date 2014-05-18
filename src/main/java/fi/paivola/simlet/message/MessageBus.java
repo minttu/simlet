@@ -15,15 +15,15 @@ public class MessageBus {
         this.buffer = new ArrayList<Message>();
     }
 
-    public synchronized void addMessage(Message message) {
+    public void addMessage(Message message) {
         buffer.add(message);
     }
 
-    public synchronized List<Message> getAllMessages() {
+    public List<Message> getAllMessages() {
         return new ArrayList<Message>(messages);
     }
 
-    public synchronized void updateMessages() {
+    public void updateMessages() {
         this.messages.clear();
         this.messages.addAll(buffer);
         this.buffer.clear();

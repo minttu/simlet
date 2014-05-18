@@ -1,7 +1,7 @@
 package fi.paivola.simlet.time;
 
 /**
- * Created by juhani on 5/14/14.
+ * Represents a unit of time such as a week.
  */
 public enum Unit implements TimeInterface {
     MINUTE(1),

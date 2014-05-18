@@ -2,10 +2,7 @@ package fi.paivola.simlet.model;
 
 import fi.paivola.simlet.message.Message;
 import fi.paivola.simlet.message.MessageBus;
-import fi.paivola.simlet.time.ScheduleItem;
 import fi.paivola.simlet.time.Scheduler;
-import fi.paivola.simlet.time.Time;
-import fi.paivola.simlet.time.Unit;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
 import java.util.ArrayList;
@@ -15,9 +12,9 @@ import java.util.List;
  * Created by juhani on 5/14/14.
  */
 public abstract class Model extends MessageBus {
-    private final String name;
     public final List<Model> connections;
     protected final ScriptObjectMirror settings;
+    private final String name;
     protected Scheduler scheduler;
 
     public Model(String name, ScriptObjectMirror settings) {
@@ -32,7 +29,7 @@ public abstract class Model extends MessageBus {
     }
 
     @Override
-    public synchronized void addMessage(Message message) {
+    public void addMessage(Message message) {
         super.addMessage(message);
         updateMessages();
     }

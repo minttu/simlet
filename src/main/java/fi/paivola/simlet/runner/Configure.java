@@ -2,33 +2,27 @@ package fi.paivola.simlet.runner;
 
 import fi.paivola.simlet.sampler.Parameter;
 import fi.paivola.simlet.sampler.Sampler;
-import fi.paivola.simlet.time.ScheduleItem;
 import fi.paivola.simlet.time.Scheduler;
 import fi.paivola.simlet.time.Time;
 import fi.paivola.simlet.ui.ParameterPane;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import jdk.nashorn.api.scripting.ScriptUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by juhani on 16.5.2014.
  */
 public class Configure {
+    public static ParameterPane parameterPane = null;
     private final ScriptObjectMirror param;
     private final List<Parameter> parameterList;
     private final Sampler sampler;
+    private final List<Map<String, Double>> mapList;
     private int runs, run;
     private int samples, sample;
-    private final List<Map<String, Double>> mapList;
-    public static ParameterPane parameterPane = null;
 
     public Configure(ScriptObjectMirror param) {
         this.param = param;

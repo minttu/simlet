@@ -21,12 +21,12 @@ public class CodePane extends BorderPane implements Tabbable {
     private final ToolBar toolBar;
     private final Label fileLabel;
     private final ProgressBar progressBar;
-    private Tab tab;
-    private String code;
-    private File file;
     private final Button saveButton;
     private final Button parametersButton;
     private final Button runButton;
+    private Tab tab;
+    private String code;
+    private File file;
 
     public CodePane(ProgressBar progressBar) {
         this.progressBar = progressBar;

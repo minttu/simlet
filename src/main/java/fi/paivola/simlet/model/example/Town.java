@@ -53,6 +53,6 @@ public class Town extends PointModel {
     public void registerCallbacks(Scheduler scheduler) {
         super.registerCallbacks(scheduler);
         // Every day at 12:00
-        scheduler.after(new Time(12, Unit.HOUR), sc -> scheduler.every(Unit.DAY, s -> eat(s)));
+        scheduler.after(new Time(12, Unit.HOUR), sc -> scheduler.every(Unit.DAY, this::eat));
     }
 }

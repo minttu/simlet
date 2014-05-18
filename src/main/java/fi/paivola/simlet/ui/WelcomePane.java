@@ -2,9 +2,7 @@ package fi.paivola.simlet.ui;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
 import org.pegdown.PegDownProcessor;
