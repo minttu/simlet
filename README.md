@@ -1,7 +1,7 @@
 SIMLet
 ======
 
-Simulation engine.
+Simulation engine. Extremely WIP.
 
 Requires
 ========
